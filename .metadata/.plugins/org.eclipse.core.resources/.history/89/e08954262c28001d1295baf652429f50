@@ -1,0 +1,66 @@
+package j2se.basics.jdbc.dao;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class ProductDao extends AbstractDao<Product>{
+	
+	PreparedStatement pstm;
+	String sql;
+	int i;
+	@Override
+	public int save(Product p) throws ClassNotFoundException, SQLException {
+		
+		sql = "insert into product "
+				+ "(name,manufacturer,description,price,inStock) "
+				+ "values(?,?,?,?,?)";
+		connect();
+		pstm = con.prepareStatement(sql);
+		pstm.setString(1, p.getName());
+		pstm.setString(2, p.getManufacturer());
+		pstm.setString(3, p.getDescription());
+		pstm.setFloat(4, p.getPrice());
+		pstm.setBoolean(5, p.isInStock());
+		i = pstm.executeUpdate();
+		disconnect();
+		return i;
+	}
+
+	@Override
+	public Product getOne(long id) throws ClassNotFoundException, SQLException {
+		Product p =new Product();
+		sql = "select * from product where id=?";
+		connect();
+		pstm = con.prepareStatement(sql);
+		pstm.setLong(1, id);
+		ResultSet rs = pstm.executeQuery();
+		if(rs.next()) {
+			p.setId(rs.getInt("id"));
+			p.setName(rs.getString("Name"));
+			p.setManufacturer(rs.getString("Manufacturer"));
+			p.setDescription(rs.getString("Description"));
+		}
+		return null;
+	}
+
+	@Override
+	public ArrayList<Product> getAll() throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int update(Product t) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int delete(long id) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+}
